@@ -18,6 +18,7 @@ public class CategoryServletController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        categoryApplication.getAllCategories();
         String url = "/category/category.html";
 
         String action = request.getParameter("action");
@@ -36,10 +37,19 @@ public class CategoryServletController extends HttpServlet {
                     .categoryName(categoryName)
                     .description(description)
                     .build();
-            categoryApplication.createCategory(category);
+            try {
+                categoryApplication.createCategory(category);
+            } catch (Exception e) {
+
+                url = "/category/error_notification.jsp";
+                request.setAttribute("error",e.getMessage());
+
+                getServletContext()
+                        .getRequestDispatcher(url)
+                        .forward(request, response);
+            }
 
             request.setAttribute("category", category);
-            request.setAttribute("test", "test");
 
             url = "/category/thanks.jsp";
         }

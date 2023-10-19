@@ -28,16 +28,13 @@ public class UserRepository implements IUserRepository{
     public User createUser(User user) {
         //open connection
         connectToCollection();
-
         //add time
         Long current = System.currentTimeMillis();
         user.setCreatedAt(current);
         user.setUpdatedAt(current);
         Document userDocument = Document.parse(gson.toJson(user));
-
         //insert to db
         collection.insertOne(userDocument);
-
         //close connection
         closeConnection();
         return user;
