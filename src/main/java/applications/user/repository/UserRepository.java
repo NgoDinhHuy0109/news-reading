@@ -2,12 +2,17 @@ package applications.user.repository;
 
 import applications.user.User;
 import com.google.gson.Gson;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
+import com.mongodb.client.result.InsertOneResult;
 import constant.ApplicationConstant;
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class UserRepository implements IUserRepository{
     private MongoClient mongoClient;
     private MongoDatabase database;
@@ -34,9 +39,40 @@ public class UserRepository implements IUserRepository{
         user.setUpdatedAt(current);
         Document userDocument = Document.parse(gson.toJson(user));
         //insert to db
-        collection.insertOne(userDocument);
+        InsertOneResult result = collection.insertOne(userDocument);
+        BsonValue _id = result.getInsertedId();
+        if(_id == null) {
+            return null;
+        }
+        Map<String, Object> query = new HashMap<>();
+        query.put("_id", _id);
+        query.put("isDeleted", false);
+        Document jsonQuery = new Document(query);
+        FindIterable<Document> userFounded = collection.find(jsonQuery);
+        User createdUser = documentToUser(Objects.requireNonNull(userFounded.first()));
         //close connection
         closeConnection();
+        return createdUser;
+    }
+
+    @Override
+    public User getUserById(String idUser){
+        connectToCollection();
+        Map<String, Object> query = new HashMap<>();
+        query.put("_id", idUser);
+        query.put("isDeleted", false);
+        Document jsonQuery = new Document(query);
+        FindIterable<Document> userDocument = collection.find(jsonQuery);
+        User user = documentToUser(Objects.requireNonNull(userDocument.first()));
+        closeConnection();
+        return user;
+    }
+    public User documentToUser(Document document) {
+        User user = new User();
+        user.set_id(document.getObjectId("_id").toString());
+        user.setUserName(document.getString("userName"));
+        user.setEmail(document.getString("email"));
+        user.setDescription(document.getString("description"));
         return user;
     }
 }

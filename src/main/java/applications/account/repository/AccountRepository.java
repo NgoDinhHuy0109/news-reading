@@ -2,12 +2,14 @@ package applications.account.repository;
 import applications.account.Account;
 
 import com.google.gson.Gson;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import constant.ApplicationConstant;
 import org.bson.Document;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class AccountRepository implements IAccountRepository{
     private MongoClient mongoClient;
     private MongoDatabase database;
@@ -36,4 +38,30 @@ public class AccountRepository implements IAccountRepository{
         closeConnection();
         return account;
     }
+    @Override
+    public Account getByUsername(String accountName) {
+        connectToCollection();
+        Map<String, Object> query = new HashMap<>();
+        query.put("account", accountName);
+        query.put("isDeleted", false);
+        Document jsonQuery = new Document(query);
+        FindIterable<Document> accountsDocument = collection.find(jsonQuery);
+        Document result = accountsDocument.first();
+        if (result == null) {
+            return null;
+        }
+        Account account = documentToAccount(Objects.requireNonNull(result));
+        closeConnection();
+        return account;
+    }
+
+    public Account documentToAccount(Document document) {
+        Account account = new Account();
+        account.set_id(document.getObjectId("_id").toString());
+        account.setUser_id(document.getObjectId("User_id").toString());
+        account.setUsername(document.getString("Username"));
+        account.setPassword(document.getString("Password"));
+        return account;
+    }
+
 }

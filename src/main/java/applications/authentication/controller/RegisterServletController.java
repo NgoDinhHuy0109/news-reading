@@ -1,10 +1,10 @@
-package applications.register.controller;
+package applications.authentication.controller;
 
 import applications.account.Account;
-import applications.category.Category;
-import applications.register.application.RegisterApplication;
+
+import applications.authentication.application.RegisterApplication;
 import applications.user.User;
-import applications.user.application.UserApplication;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,7 +32,7 @@ public class RegisterServletController extends HttpServlet {
             String userName = request.getParameter("userName");
             String email = request.getParameter("email");
             String description = request.getParameter("description");
-            String account = request.getParameter("account");
+            String username = request.getParameter("username");
             String password = request.getParameter("password");
             User user = User.builder()
                     .userName(userName)
@@ -40,7 +40,7 @@ public class RegisterServletController extends HttpServlet {
                     .description(description)
                     .build();
             Account account1 = Account.builder()
-                    .account(account)
+                    .username(username)
                     .password(password)
                     .build();
             registerApplication.register(user, account1);

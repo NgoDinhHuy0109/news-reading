@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class Account implements Serializable{
     private String _id;
     private String user_id;
-    private String account;
+    private String username;
     private String password;
     private Long createdAt;
     private Long updatedAt;
