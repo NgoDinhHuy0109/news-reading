@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-@WebServlet(name = "RegisterServletController", urlPatterns = {"/register"})
+@WebServlet(name = "RegisterServletController", urlPatterns = {"/sign_up"})
 public class RegisterServletController extends HttpServlet {
     RegisterApplication registerApplication = new RegisterApplication();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String url = "/register/register.html";
+        String url = "/sign_up/sign_up.html";
 
         String action = request.getParameter("action");
         if (action == null) {
@@ -26,13 +26,13 @@ public class RegisterServletController extends HttpServlet {
         }
 
         if (action.equals("join")) {
-            url = "/register/register.html";    // the "join" page
+            url = "/sign_up/sign_up.html";    // the "join" page
         }
         if (action.equals("add")) {
-            String userName = request.getParameter("userName");
+            String userName = request.getParameter("username");
             String email = request.getParameter("email");
             String description = request.getParameter("description");
-            String username = request.getParameter("username");
+            String username = request.getParameter("account");
             String password = request.getParameter("password");
             User user = User.builder()
                     .userName(userName)

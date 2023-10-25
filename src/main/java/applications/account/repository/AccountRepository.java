@@ -58,9 +58,9 @@ public class AccountRepository implements IAccountRepository{
     public Account documentToAccount(Document document) {
         Account account = new Account();
         account.set_id(document.getObjectId("_id").toString());
-        account.setUser_id(document.getObjectId("User_id").toString());
-        account.setUsername(document.getString("Username"));
-        account.setPassword(document.getString("Password"));
+        account.setUser_id(document.getObjectId("user_id").toString());
+        account.setUsername(document.getString("username"));
+        account.setPassword(document.getString("password"));
         return account;
     }
 

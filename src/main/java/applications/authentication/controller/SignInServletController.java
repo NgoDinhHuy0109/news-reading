@@ -33,12 +33,10 @@ public class SignInServletController extends HttpServlet {
             } catch (Exception e) {
                 url = "/sign_in/error_notification.jsp";
                 request.setAttribute("error",e.getMessage());
-
                 getServletContext()
                         .getRequestDispatcher(url)
                         .forward(request, response);
             }
-
             url = "/user/user.jsp";
         }
         getServletContext()
