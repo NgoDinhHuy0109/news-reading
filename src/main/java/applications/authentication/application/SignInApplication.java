@@ -25,6 +25,7 @@ public class SignInApplication {
         if (!account.getPassword().equals(password)) {
             throw new Exception("Password does not right");
         }
+
         return userService.getUserById(account.getUser_id());
     }
 }

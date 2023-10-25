@@ -1,5 +1,6 @@
 package applications.user.repository;
 
+import applications.account.Account;
 import applications.user.User;
 import com.google.gson.Gson;
 import com.mongodb.client.*;
@@ -56,14 +57,26 @@ public class UserRepository implements IUserRepository{
     }
 
     @Override
-    public User getUserById(String idUser){
+    public User getUserById(String idUser) {
         connectToCollection();
+
+        // Parse the idUser String into an ObjectId
+        ObjectId userId = new ObjectId(idUser);
+
         Map<String, Object> query = new HashMap<>();
-        query.put("_id", idUser);
+        query.put("_id", userId);
         query.put("isDeleted", false);
         Document jsonQuery = new Document(query);
         FindIterable<Document> userDocument = collection.find(jsonQuery);
-        User user = documentToUser(Objects.requireNonNull(userDocument.first()));
+        Document result = userDocument.first();
+
+        // Check if the result is null to avoid a NullPointerException
+        if (result == null) {
+            closeConnection();
+            return null;
+        }
+
+        User user = documentToUser(result);
         closeConnection();
         return user;
     }

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.mongodb.client.*;
 import constant.ApplicationConstant;
 import org.bson.Document;
-
+import org.bson.types.ObjectId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class AccountRepository implements IAccountRepository{
     public Account getByUsername(String accountName) {
         connectToCollection();
         Map<String, Object> query = new HashMap<>();
-        query.put("account", accountName);
+        query.put("username", accountName);
         query.put("isDeleted", false);
         Document jsonQuery = new Document(query);
         FindIterable<Document> accountsDocument = collection.find(jsonQuery);
@@ -58,9 +58,11 @@ public class AccountRepository implements IAccountRepository{
     public Account documentToAccount(Document document) {
         Account account = new Account();
         account.set_id(document.getObjectId("_id").toString());
-        account.setUser_id(document.getObjectId("user_id").toString());
+        account.setUser_id(document.getString("user_id"));
         account.setUsername(document.getString("username"));
         account.setPassword(document.getString("password"));
+        account.setCreatedAt(document.getLong("createdAt"));
+        account.setUpdatedAt(document.getLong("updatedAt"));
         return account;
     }
 

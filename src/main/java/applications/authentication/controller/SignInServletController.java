@@ -2,6 +2,8 @@ package applications.authentication.controller;
 
 
 import applications.authentication.application.SignInApplication;
+import applications.user.User;
+import applications.user.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +18,7 @@ public class SignInServletController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = "/sign_in/sign_in.html";
-
+        UserService userService = new UserService();
         String action = request.getParameter("action");
         if (action == null) {
             action = "submit";  // default action
@@ -30,6 +32,7 @@ public class SignInServletController extends HttpServlet {
             String password = request.getParameter("password");
             try {
                 signInApplication.signIn(userName, password);
+
             } catch (Exception e) {
                 url = "/sign_in/error_notification.jsp";
                 request.setAttribute("error",e.getMessage());
@@ -37,7 +40,7 @@ public class SignInServletController extends HttpServlet {
                         .getRequestDispatcher(url)
                         .forward(request, response);
             }
-            url = "/user/user.jsp";
+
         }
         getServletContext()
                 .getRequestDispatcher(url)
