@@ -3,15 +3,24 @@ package applications.account.service;
 import applications.account.Account;
 import applications.account.repository.IAccountRepository;
 import applications.account.repository.AccountRepository;
+import applications.category.Category;
+
+import java.util.List;
 
 public class AccountService {
-    IAccountRepository iUserRepository = new AccountRepository();
+    IAccountRepository iAccountRepository = new AccountRepository();
 
     public Account createAccount(Account account) {
-        return iUserRepository.createAccount(account);
+        return iAccountRepository.createAccount(account);
     }
 
     public Account getUserByAccount(String accountName) {
-        return iUserRepository.getByUsername(accountName);
+        return iAccountRepository.getByUsername(accountName);
+    }
+    public Long countUsername(String username) {
+        return iAccountRepository.countUsername(username);
+    }
+    public List<Account> getAll() {
+        return iAccountRepository.getAll();
     }
 }

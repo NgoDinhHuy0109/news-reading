@@ -14,7 +14,7 @@ public class CategoryApplication {
         if (StringUtils.isEmpty(category.getCategoryName())) {
             throw new Exception("Category name can not be not empty");
         }
-        if(categoryService.countCategoryByName(category.getCategoryName()) > 1) {
+        if(categoryService.countCategoryByName(category.getCategoryName()) >= 1) {
             throw new Exception("Category name existed ");
         }
 

@@ -1,6 +1,7 @@
 package applications.user.repository;
 
 import applications.account.Account;
+import applications.category.Category;
 import applications.user.User;
 import com.google.gson.Gson;
 import com.mongodb.client.*;
@@ -10,9 +11,7 @@ import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class UserRepository implements IUserRepository{
     private MongoClient mongoClient;
@@ -80,6 +79,7 @@ public class UserRepository implements IUserRepository{
         closeConnection();
         return user;
     }
+
     public User documentToUser(Document document) {
         User user = new User();
         user.set_id(document.getObjectId("_id").toString());

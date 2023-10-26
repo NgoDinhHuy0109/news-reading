@@ -43,7 +43,25 @@ public class RegisterServletController extends HttpServlet {
                     .username(username)
                     .password(password)
                     .build();
-            registerApplication.register(user, account1);
+            try {
+                registerApplication.register(user, account1);
+            } catch (Exception e) {
+                User user1 = new User();
+                user1.setUserName(userName);
+                user1.setEmail(email);
+                user1.setDescription(description);
+                Account users = new Account();
+                users.setUsername(username);
+                users.setPassword(password);
+                request.setAttribute("users", users);
+                request.setAttribute("user1", user1);
+                url = "/sign_up/error_notification.jsp";
+                request.setAttribute("error",e.getMessage());
+
+                getServletContext()
+                        .getRequestDispatcher(url)
+                        .forward(request, response);
+            }
 
             request.setAttribute("user", user);
 

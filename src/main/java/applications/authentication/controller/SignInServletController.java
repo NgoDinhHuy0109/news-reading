@@ -1,6 +1,7 @@
 package applications.authentication.controller;
 
 
+import applications.account.Account;
 import applications.authentication.application.SignInApplication;
 import applications.user.User;
 import applications.user.service.UserService;
@@ -28,19 +29,34 @@ public class SignInServletController extends HttpServlet {
             url = "/sign_in/sign_in.html";    // the "join" page
         }
         if (action.equals("add")) {
-            String userName = request.getParameter("username");
+            String username = request.getParameter("username");
             String password = request.getParameter("password");
             try {
-                signInApplication.signIn(userName, password);
+                String userid = String.valueOf(signInApplication.signIn(username, password).get_id());
+                User user = userService.getUserById(userid);
+                if (user != null) {
+                    // Set user information as an attribute in the request
+                    request.setAttribute("user", user);
 
+                    // Forward to user.jsp
+                    url = "/user/user.jsp";
+                } else {
+                    // Handle the case where user information couldn't be retrieved
+                    url = "/sign_in/error_notification.jsp";
+                    request.setAttribute("error", "User information not found");
+                }
             } catch (Exception e) {
+                Account users = new Account();
+                users.setUsername(username);
+                users.setPassword(password);
+                request.setAttribute("users", users);
                 url = "/sign_in/error_notification.jsp";
+
                 request.setAttribute("error",e.getMessage());
                 getServletContext()
                         .getRequestDispatcher(url)
                         .forward(request, response);
             }
-
         }
         getServletContext()
                 .getRequestDispatcher(url)

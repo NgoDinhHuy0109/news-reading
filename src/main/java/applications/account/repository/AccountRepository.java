@@ -5,10 +5,8 @@ import com.google.gson.Gson;
 import com.mongodb.client.*;
 import constant.ApplicationConstant;
 import org.bson.Document;
-import org.bson.types.ObjectId;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+
+import java.util.*;
 
 public class AccountRepository implements IAccountRepository{
     private MongoClient mongoClient;
@@ -54,7 +52,35 @@ public class AccountRepository implements IAccountRepository{
         closeConnection();
         return account;
     }
+    @Override
+    public Long countUsername(String username) {
+        //Connect to mongodb
+        connectToCollection();
+        // count category name existed
+        Map<String, Object> query = new HashMap<>();
+        query.put("username", username);
+        Document jsonQuery = new Document(query);
+        Long result = collection.countDocuments(jsonQuery);
+        //close mongodb
+        closeConnection();
+        return result;
+    }
+    @Override
+    public List<Account> getAll() {
+        connectToCollection();
+        Map<String, Object> query = new HashMap<>();
+        query.put("isDeleted", false);
+        Document jsonQuery = new Document(query);
+        FindIterable<Document> accountsDocument = collection.find(jsonQuery);
+        List<Account> accountList = new ArrayList<>();
 
+        for (Document accountDocument : accountsDocument) {
+            Account account = documentToAccount(accountDocument);
+            accountList.add(account);
+        }
+        closeConnection();
+        return accountList;
+    }
     public Account documentToAccount(Document document) {
         Account account = new Account();
         account.set_id(document.getObjectId("_id").toString());
